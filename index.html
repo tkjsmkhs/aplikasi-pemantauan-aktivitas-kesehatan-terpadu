@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tekaje SMK Hidayatus Sholihin Gurah</title>
+  <title>Health Tracker Lengkap</title>
   <script src="/_sdk/data_sdk.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <style>
@@ -329,10 +329,34 @@
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
  </head>
  <body>
+  <!--awal topbar-->
+    <section class="cid-qPCA2InUXF" id="menu1-0">
+        <nav class="bg-darg">
+            <div
+                class="topbar navbar-expand beta-menu navbar-dropdown align-items-center navbar-fixed-top navbar-toggleable-sm">
+                <div class="col-lg-2">
+                    <script language="JavaScript">
+                        var tanggallengkap = new String();
+                        var namahari = ("Minggu Senin Selasa Rabu Kamis Jumat Sabtu");
+                        namahari = namahari.split(" ");
+                        var namabulan = ("Januari Februari Maret April Mei Juni Juli Agustus September Oktober November Desember");
+                        namabulan = namabulan.split(" ");
+                        var tgl = new Date();
+                        var hari = tgl.getDay();
+                        var tanggal = tgl.getDate();
+                        var bulan = tgl.getMonth();
+                        var tahun = tgl.getFullYear();
+                        tanggallengkap = "<HTML><font color = 'white'>" + "<b><marquee>" + "Selamat Datang, Anda Mengakses Aplikasi Pemantauan Aktivitas Kesehatan Terpadu Reserved by SMK Hidayatus Sholihin Gurah. Power by Tim Tekaje SMK HS Pada Hari " + namahari[hari] + ", " + tanggal + " " + namabulan[bulan] + " " + tahun + "</marquee>" + "</b></font></HTML>";
+                    </script>
+                </div>
+                <script language="JavaScript">document.write(tanggallengkap);</script>
+        </nav>
+		</div>
+	</section>	
   <div class="container">
    <header class="header">
-    <h1 id="app-title">Aplikasi Pemantauan Aktivitas Kesehatan Terpadu V 1.0</h1>
-    <p>Pantau kesehatan Anda secara menyeluruh dengan saran personal</p>
+    <h1 id="app-title">Aplikasi Pemantauan Aktivitas Kesehatan Terpadu Versi 1.0</h1>
+    <p>Pantau kesehatan Anda secara menyeluruh dengan saran hidup sehat seperti :<br>🎯 Target Kalori Harian Anda<br>🍽️ Rekomendasi Makanan<br>🏃 Rekomendasi Aktivitas Fisik</p>
    </header>
    <main>
     <div class="card">
@@ -352,40 +376,6 @@
       </div><button type="submit" class="btn-primary" id="health-submit-btn">🔍 Analisis Kesehatan Saya</button>
      </form>
      <div id="health-result-container"></div>
-    </div>
-    <div class="grid-2">
-     <div class="card">
-      <h2 id="calorie-section-title">🍎 Pencatatan Kalori</h2>
-      <div class="stats-card" style="margin-bottom: 15px;">
-       <h4>Total Kalori Hari Ini</h4>
-       <p id="total-calories">0 / 2000 kkal</p>
-      </div>
-      <form id="calorie-form" onsubmit="addCalorieEntry(event)">
-       <div class="form-group"><label for="food-name">Nama Makanan</label> <input type="text" id="food-name" required placeholder="Contoh: Nasi goreng">
-       </div>
-       <div class="form-group"><label for="calories">Kalori (kkal)</label> <input type="number" id="calories" required min="1" max="5000" placeholder="Contoh: 350">
-       </div><button type="submit" class="btn-primary" id="calorie-submit-btn">Tambah</button>
-      </form>
-      <div id="calorie-list" class="entry-list"></div>
-     </div>
-     <div class="card">
-      <h2 id="activity-section-title">🏃 Aktivitas Fisik</h2>
-      <div class="stats-card" style="margin-bottom: 15px;">
-       <h4>Kalori Terbakar Hari Ini</h4>
-       <p id="total-burned">0 kkal</p>
-      </div>
-      <form id="activity-form" onsubmit="addActivityEntry(event)">
-       <div class="form-group"><label for="activity-type">Jenis Aktivitas</label> <select id="activity-type" required> <option value="">Pilih aktivitas</option> <option value="Jalan Kaki" data-met="3.5">🚶 Jalan Kaki</option> <option value="Lari" data-met="8">🏃 Lari</option> <option value="Bersepeda" data-met="6">🚴 Bersepeda</option> <option value="Renang" data-met="7">🏊 Renang</option> <option value="Yoga" data-met="2.5">🧘 Yoga</option> <option value="Angkat Beban" data-met="5">🏋️ Angkat Beban</option> </select>
-       </div>
-       <div class="form-group"><label for="duration">Durasi (menit)</label> <input type="number" id="duration" required min="1" max="480" placeholder="Contoh: 30">
-       </div><button type="submit" class="btn-primary" id="activity-submit-btn">Tambah</button>
-      </form>
-      <div id="activity-list" class="entry-list"></div>
-     </div>
-    </div>
-    <div class="card">
-     <h2>📊 Riwayat Pemeriksaan Kesehatan</h2>
-     <div id="health-history" class="entry-list"></div>
     </div>
    </main>
   </div>
@@ -409,9 +399,6 @@
     const dataHandler = {
       onDataChanged(data) {
         allRecords = data;
-        updateCalorieSummary();
-        updateActivitySummary();
-        updateHealthHistory();
       }
     };
     
@@ -879,178 +866,9 @@
       };
     }
     
-    async function addCalorieEntry(event) {
-      event.preventDefault();
-      
-      if (allRecords.length >= 999) {
-        showToast('Batas maksimum 999 data tercapai. Hapus beberapa data terlebih dahulu.');
-        return;
-      }
-      
-      const submitBtn = document.getElementById('calorie-submit-btn');
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="loading"></span>';
-      
-      const foodName = document.getElementById('food-name').value;
-      const calories = parseInt(document.getElementById('calories').value);
-      
-      const result = await window.dataSdk.create({
-        id: Date.now().toString(),
-        type: 'calorie',
-        date: new Date().toISOString(),
-        food_name: foodName,
-        calories: calories,
-        created_at: new Date().toISOString()
-      });
-      
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Tambah';
-      
-      if (result.isOk) {
-        document.getElementById('calorie-form').reset();
-        showToast('✅ Makanan berhasil ditambahkan!');
-      } else {
-        showToast('❌ Gagal menambahkan makanan');
-      }
-    }
+
     
-    async function addActivityEntry(event) {
-      event.preventDefault();
-      
-      if (allRecords.length >= 999) {
-        showToast('Batas maksimum 999 data tercapai. Hapus beberapa data terlebih dahulu.');
-        return;
-      }
-      
-      const submitBtn = document.getElementById('activity-submit-btn');
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="loading"></span>';
-      
-      const activitySelect = document.getElementById('activity-type');
-      const activityName = activitySelect.value;
-      const duration = parseInt(document.getElementById('duration').value);
-      const met = parseFloat(activitySelect.options[activitySelect.selectedIndex].dataset.met);
-      
-      const caloriesBurned = Math.round((met * 70 * duration) / 60);
-      
-      const result = await window.dataSdk.create({
-        id: Date.now().toString(),
-        type: 'activity',
-        date: new Date().toISOString(),
-        activity_name: activityName,
-        duration: duration,
-        calories_burned: caloriesBurned,
-        created_at: new Date().toISOString()
-      });
-      
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Tambah';
-      
-      if (result.isOk) {
-        document.getElementById('activity-form').reset();
-        showToast('✅ Aktivitas berhasil ditambahkan!');
-      } else {
-        showToast('❌ Gagal menambahkan aktivitas');
-      }
-    }
-    
-    function updateCalorieSummary() {
-      const today = new Date().toISOString().split('T')[0];
-      const todayCalories = allRecords.filter(r => 
-        r.type === 'calorie' && r.date.startsWith(today)
-      );
-      
-      const total = todayCalories.reduce((sum, r) => sum + (r.calories || 0), 0);
-      document.getElementById('total-calories').textContent = `${total} / 2000 kkal`;
-      
-      const calorieList = document.getElementById('calorie-list');
-      
-      if (todayCalories.length === 0) {
-        calorieList.innerHTML = '<div class="empty-state"><p>📝 Belum ada makanan yang dicatat hari ini</p></div>';
-        return;
-      }
-      
-      calorieList.innerHTML = todayCalories.map(entry => `
-        <div class="entry-item">
-          <div class="entry-item-info">
-            <h4>${entry.food_name}</h4>
-            <p>${entry.calories} kkal • ${new Date(entry.date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</p>
-          </div>
-          <button class="btn-secondary" onclick="deleteEntry('${entry.__backendId}')">Hapus</button>
-        </div>
-      `).join('');
-    }
-    
-    function updateActivitySummary() {
-      const today = new Date().toISOString().split('T')[0];
-      const todayActivities = allRecords.filter(r => 
-        r.type === 'activity' && r.date.startsWith(today)
-      );
-      
-      const totalBurned = todayActivities.reduce((sum, r) => sum + (r.calories_burned || 0), 0);
-      document.getElementById('total-burned').textContent = `${totalBurned} kkal`;
-      
-      const activityList = document.getElementById('activity-list');
-      
-      if (todayActivities.length === 0) {
-        activityList.innerHTML = '<div class="empty-state"><p>🏃 Belum ada aktivitas yang dicatat hari ini</p></div>';
-        return;
-      }
-      
-      activityList.innerHTML = todayActivities.map(entry => `
-        <div class="entry-item">
-          <div class="entry-item-info">
-            <h4>${entry.activity_name}</h4>
-            <p>${entry.duration} menit • ${entry.calories_burned} kkal terbakar</p>
-          </div>
-          <button class="btn-secondary" onclick="deleteEntry('${entry.__backendId}')">Hapus</button>
-        </div>
-      `).join('');
-    }
-    
-    function updateHealthHistory() {
-      const healthRecords = allRecords.filter(r => r.type === 'health').sort((a, b) => 
-        new Date(b.date) - new Date(a.date)
-      );
-      
-      const healthHistory = document.getElementById('health-history');
-      
-      if (healthRecords.length === 0) {
-        healthHistory.innerHTML = '<div class="empty-state"><p>📊 Belum ada riwayat pemeriksaan kesehatan</p><p>Mulai dengan mengisi form pemeriksaan di atas</p></div>';
-        return;
-      }
-      
-      healthHistory.innerHTML = healthRecords.map(entry => {
-        let bmiCategory = '';
-        if (entry.bmi < 18.5) bmiCategory = 'Kurus';
-        else if (entry.bmi < 25) bmiCategory = 'Normal';
-        else if (entry.bmi < 30) bmiCategory = 'Kelebihan BB';
-        else bmiCategory = 'Obesitas';
-        
-        return `
-          <div class="entry-item">
-            <div class="entry-item-info">
-              <h4>BMI ${entry.bmi} (${bmiCategory}) • Gula Darah ${entry.blood_sugar} mg/dL • Kolesterol ${entry.cholesterol} mg/dL</h4>
-              <p>BB: ${entry.weight} kg • TB: ${entry.height} cm • ${new Date(entry.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-            </div>
-            <button class="btn-secondary" onclick="deleteEntry('${entry.__backendId}')">Hapus</button>
-          </div>
-        `;
-      }).join('');
-    }
-    
-    async function deleteEntry(backendId) {
-      const record = allRecords.find(r => r.__backendId === backendId);
-      if (!record) return;
-      
-      const result = await window.dataSdk.delete(record);
-      
-      if (result.isOk) {
-        showToast('✅ Data berhasil dihapus!');
-      } else {
-        showToast('❌ Gagal menghapus data');
-      }
-    }
+
     
     function showToast(message) {
       const toast = document.createElement('div');
@@ -1065,5 +883,18 @@
     
     initializeApp();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a14fdb91171fd9c',t:'MTc2MzYxMDcxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a1561c15117f146',t:'MTc2MzYxNDgwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+  <div class="cid-qPCA2InUXX" id="copyrights">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <p>
+                        &copy 2025 All Rights Reserved by <a href="https://smkhskediri.sch.id">SMK Hidayatus Sholihin Gurah</a>. Power by <a
+                            href="">Tim Tekaje SMK HS</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+ </body>
 </html>
